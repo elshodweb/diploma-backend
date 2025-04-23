@@ -23,7 +23,17 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { DocumentStatus } from '@prisma/client';
+import { DocumentStatus } from '../types/document-status.enum';
+
+// Define the Multer file type
+interface MulterFile {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  buffer: Buffer;
+  size: number;
+}
 
 @ApiTags('documents')
 @Controller('documents')
@@ -39,7 +49,7 @@ export class DocumentsController {
   async create(
     @Req() req: any,
     @Body() createDocumentDto: { title: string; description?: string },
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: MulterFile,
   ) {
     return this.documentsService.create(
       req.user.id,

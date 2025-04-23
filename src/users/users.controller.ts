@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 import {
   ApiTags,
   ApiOperation,
@@ -30,29 +31,23 @@ export class UsersController {
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Create new user' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
-  async create(
-    @Body() createUserDto: { email: string; password: string; role: string },
-  ) {
-    return this.usersService.create(
-      createUserDto.email,
-      createUserDto.password,
-      createUserDto.role,
-    );
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 
   @Get()
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Return all users' })
-  async findAll() {
+  findAll() {
     return this.usersService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get user by id' })
   @ApiResponse({ status: 200, description: 'Return user by id' })
-  async findOne(@Param('id') id: string) {
-    return this.usersService.findById(id);
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
   }
 
   @Put(':id')

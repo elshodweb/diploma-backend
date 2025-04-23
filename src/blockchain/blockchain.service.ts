@@ -1,47 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ethers } from 'ethers';
+
+interface DocumentRecord {
+  documentId: string;
+  ipfsHash: string;
+  uploader: string;
+  timestamp: number;
+}
 
 @Injectable()
 export class BlockchainService {
-  private provider: ethers.Provider;
-  private contract: ethers.Contract;
+  private documents: Map<string, DocumentRecord> = new Map();
 
-  constructor(private configService: ConfigService) {
-    const network = this.configService.get<string>('ETHEREUM_NETWORK');
-    const apiKey = this.configService.get<string>('ETHEREUM_API_KEY');
-    const contractAddress = this.configService.get<string>(
-      'SMART_CONTRACT_ADDRESS',
-    );
-
-    this.provider = new ethers.JsonRpcProvider(
-      `https://${network}.infura.io/v3/${apiKey}`,
-    );
-
-    // ABI for the DocumentUpload contract
-    const abi = [
-      'event DocumentUploaded(bytes32 indexed documentId, string ipfsHash, address indexed uploader, uint256 timestamp)',
-      'function uploadDocument(bytes32 documentId, string ipfsHash) public',
-    ];
-
-    this.contract = new ethers.Contract(contractAddress, abi, this.provider);
-  }
+  constructor(private configService: ConfigService) {}
 
   async uploadDocument(documentId: string, ipfsHash: string): Promise<string> {
     try {
-      const signer = new ethers.Wallet(
-        this.configService.get<string>('ETHEREUM_PRIVATE_KEY'),
-        this.provider,
-      );
-      const contractWithSigner = this.contract.connect(signer);
-
-      const tx = await contractWithSigner.uploadDocument(
-        ethers.keccak256(ethers.toUtf8Bytes(documentId)),
+      const record: DocumentRecord = {
+        documentId,
         ipfsHash,
-      );
-      await tx.wait();
+        uploader: 'system', // В реальном приложении здесь был бы адрес кошелька
+        timestamp: Date.now(),
+      };
 
-      return tx.hash;
+      this.documents.set(documentId, record);
+
+      // Генерируем фейковый хэш транзакции
+      const txHash = `0x${Math.random().toString(16).slice(2)}${Date.now().toString(16)}`;
+
+      return txHash;
     } catch (error) {
       throw new Error(
         `Failed to upload document to blockchain: ${error.message}`,
@@ -51,11 +38,17 @@ export class BlockchainService {
 
   async getDocumentUploadEvent(documentId: string) {
     try {
-      const filter = this.contract.filters.DocumentUploaded(
-        ethers.keccak256(ethers.toUtf8Bytes(documentId)),
-      );
-      const events = await this.contract.queryFilter(filter);
-      return events[0];
+      const record = this.documents.get(documentId);
+      if (!record) {
+        throw new Error('Document not found');
+      }
+
+      return {
+        documentId: record.documentId,
+        ipfsHash: record.ipfsHash,
+        uploader: record.uploader,
+        timestamp: record.timestamp,
+      };
     } catch (error) {
       throw new Error(`Failed to get document upload event: ${error.message}`);
     }

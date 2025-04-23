@@ -4,7 +4,6 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { DocumentsModule } from './documents/documents.module';
-import { IpfsModule } from './ipfs/ipfs.module';
 import { BlockchainModule } from './blockchain/blockchain.module';
 
 @Module({
@@ -16,7 +15,6 @@ import { BlockchainModule } from './blockchain/blockchain.module';
     AuthModule,
     UsersModule,
     DocumentsModule,
-    IpfsModule,
     BlockchainModule,
   ],
 })
