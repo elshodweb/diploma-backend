@@ -33,15 +33,7 @@ export type BlockchainLog = $Result.DefaultSelection<Prisma.$BlockchainLogPayloa
  * Enums
  */
 export namespace $Enums {
-  export const UserRole: {
-  ADMIN: 'ADMIN',
-  USER: 'USER'
-};
-
-export type UserRole = (typeof UserRole)[keyof typeof UserRole]
-
-
-export const DocumentStatus: {
+  export const DocumentStatus: {
   DRAFT: 'DRAFT',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED'
@@ -50,10 +42,6 @@ export const DocumentStatus: {
 export type DocumentStatus = (typeof DocumentStatus)[keyof typeof DocumentStatus]
 
 }
-
-export type UserRole = $Enums.UserRole
-
-export const UserRole: typeof $Enums.UserRole
 
 export type DocumentStatus = $Enums.DocumentStatus
 
@@ -1060,11 +1048,13 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    documents: number
+    invitedDocs: number
+    approvedDocs: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    documents?: boolean | UserCountOutputTypeCountDocumentsArgs
+    invitedDocs?: boolean | UserCountOutputTypeCountInvitedDocsArgs
+    approvedDocs?: boolean | UserCountOutputTypeCountApprovedDocsArgs
   }
 
   // Custom InputTypes
@@ -1083,7 +1073,15 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type UserCountOutputTypeCountInvitedDocsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentWhereInput
+  }
+
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovedDocsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DocumentWhereInput
   }
 
@@ -1094,10 +1092,14 @@ export namespace Prisma {
    */
 
   export type DocumentCountOutputType = {
+    invitedUsers: number
+    approvedUsers: number
     blockchainLogs: number
   }
 
   export type DocumentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    invitedUsers?: boolean | DocumentCountOutputTypeCountInvitedUsersArgs
+    approvedUsers?: boolean | DocumentCountOutputTypeCountApprovedUsersArgs
     blockchainLogs?: boolean | DocumentCountOutputTypeCountBlockchainLogsArgs
   }
 
@@ -1111,6 +1113,22 @@ export namespace Prisma {
      * Select specific fields to fetch from the DocumentCountOutputType
      */
     select?: DocumentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountInvitedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+  }
+
+
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountApprovedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -1142,7 +1160,6 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    role: $Enums.UserRole | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1152,7 +1169,6 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    role: $Enums.UserRole | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1162,7 +1178,6 @@ export namespace Prisma {
     name: number
     email: number
     password: number
-    role: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1174,7 +1189,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    role?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1184,7 +1198,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    role?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1194,7 +1207,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    role?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1277,7 +1289,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role: $Enums.UserRole
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1304,10 +1315,10 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    documents?: boolean | User$documentsArgs<ExtArgs>
+    invitedDocs?: boolean | User$invitedDocsArgs<ExtArgs>
+    approvedDocs?: boolean | User$approvedDocsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1316,13 +1327,13 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    documents?: boolean | User$documentsArgs<ExtArgs>
+    invitedDocs?: boolean | User$invitedDocsArgs<ExtArgs>
+    approvedDocs?: boolean | User$approvedDocsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -1330,14 +1341,14 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      documents: Prisma.$DocumentPayload<ExtArgs>[]
+      invitedDocs: Prisma.$DocumentPayload<ExtArgs>[]
+      approvedDocs: Prisma.$DocumentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
       email: string
       password: string
-      role: $Enums.UserRole
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -1705,7 +1716,9 @@ export namespace Prisma {
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    documents<T extends User$documentsArgs<ExtArgs> = {}>(args?: Subset<T, User$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, 'findMany'> | Null>;
+    invitedDocs<T extends User$invitedDocsArgs<ExtArgs> = {}>(args?: Subset<T, User$invitedDocsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    approvedDocs<T extends User$approvedDocsArgs<ExtArgs> = {}>(args?: Subset<T, User$approvedDocsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, 'findMany'> | Null>;
 
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1739,7 +1752,6 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
-    readonly role: FieldRef<"User", 'UserRole'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -2054,9 +2066,30 @@ export namespace Prisma {
 
 
   /**
-   * User.documents
+   * User.invitedDocs
    */
-  export type User$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$invitedDocsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    cursor?: DocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+
+  /**
+   * User.approvedDocs
+   */
+  export type User$approvedDocsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the Document
      */
@@ -2108,7 +2141,6 @@ export namespace Prisma {
     status: $Enums.DocumentStatus | null
     createdAt: Date | null
     updatedAt: Date | null
-    userId: string | null
   }
 
   export type DocumentMaxAggregateOutputType = {
@@ -2119,7 +2151,6 @@ export namespace Prisma {
     status: $Enums.DocumentStatus | null
     createdAt: Date | null
     updatedAt: Date | null
-    userId: string | null
   }
 
   export type DocumentCountAggregateOutputType = {
@@ -2130,7 +2161,6 @@ export namespace Prisma {
     status: number
     createdAt: number
     updatedAt: number
-    userId: number
     _all: number
   }
 
@@ -2143,7 +2173,6 @@ export namespace Prisma {
     status?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
   }
 
   export type DocumentMaxAggregateInputType = {
@@ -2154,7 +2183,6 @@ export namespace Prisma {
     status?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
   }
 
   export type DocumentCountAggregateInputType = {
@@ -2165,7 +2193,6 @@ export namespace Prisma {
     status?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
     _all?: true
   }
 
@@ -2249,7 +2276,6 @@ export namespace Prisma {
     status: $Enums.DocumentStatus
     createdAt: Date
     updatedAt: Date
-    userId: string
     _count: DocumentCountAggregateOutputType | null
     _min: DocumentMinAggregateOutputType | null
     _max: DocumentMaxAggregateOutputType | null
@@ -2277,8 +2303,8 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    invitedUsers?: boolean | Document$invitedUsersArgs<ExtArgs>
+    approvedUsers?: boolean | Document$approvedUsersArgs<ExtArgs>
     blockchainLogs?: boolean | Document$blockchainLogsArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["document"]>
@@ -2291,11 +2317,11 @@ export namespace Prisma {
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
   }
 
   export type DocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    invitedUsers?: boolean | Document$invitedUsersArgs<ExtArgs>
+    approvedUsers?: boolean | Document$approvedUsersArgs<ExtArgs>
     blockchainLogs?: boolean | Document$blockchainLogsArgs<ExtArgs>
     _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -2304,7 +2330,8 @@ export namespace Prisma {
   export type $DocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Document"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
+      invitedUsers: Prisma.$UserPayload<ExtArgs>[]
+      approvedUsers: Prisma.$UserPayload<ExtArgs>[]
       blockchainLogs: Prisma.$BlockchainLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -2315,7 +2342,6 @@ export namespace Prisma {
       status: $Enums.DocumentStatus
       createdAt: Date
       updatedAt: Date
-      userId: string
     }, ExtArgs["result"]["document"]>
     composites: {}
   }
@@ -2681,7 +2707,9 @@ export namespace Prisma {
   export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: 'PrismaPromise';
 
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findUniqueOrThrow'> | Null, Null, ExtArgs>;
+    invitedUsers<T extends Document$invitedUsersArgs<ExtArgs> = {}>(args?: Subset<T, Document$invitedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findMany'> | Null>;
+
+    approvedUsers<T extends Document$approvedUsersArgs<ExtArgs> = {}>(args?: Subset<T, Document$approvedUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, 'findMany'> | Null>;
 
     blockchainLogs<T extends Document$blockchainLogsArgs<ExtArgs> = {}>(args?: Subset<T, Document$blockchainLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockchainLogPayload<ExtArgs>, T, 'findMany'> | Null>;
 
@@ -2720,7 +2748,6 @@ export namespace Prisma {
     readonly status: FieldRef<"Document", 'DocumentStatus'>
     readonly createdAt: FieldRef<"Document", 'DateTime'>
     readonly updatedAt: FieldRef<"Document", 'DateTime'>
-    readonly userId: FieldRef<"Document", 'String'>
   }
     
 
@@ -3029,6 +3056,48 @@ export namespace Prisma {
      * Filter which Documents to delete
      */
     where?: DocumentWhereInput
+  }
+
+
+  /**
+   * Document.invitedUsers
+   */
+  export type Document$invitedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+
+  /**
+   * Document.approvedUsers
+   */
+  export type Document$approvedUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
 
@@ -4006,7 +4075,6 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
-    role: 'role',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4021,8 +4089,7 @@ export namespace Prisma {
     ipfsHash: 'ipfsHash',
     status: 'status',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    userId: 'userId'
+    updatedAt: 'updatedAt'
   };
 
   export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
@@ -4083,20 +4150,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'UserRole'
-   */
-  export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
-    
-
-
-  /**
-   * Reference to a field of type 'UserRole[]'
-   */
-  export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -4149,10 +4202,10 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    documents?: DocumentListRelationFilter
+    invitedDocs?: DocumentListRelationFilter
+    approvedDocs?: DocumentListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -4160,10 +4213,10 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    documents?: DocumentOrderByRelationAggregateInput
+    invitedDocs?: DocumentOrderByRelationAggregateInput
+    approvedDocs?: DocumentOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -4174,10 +4227,10 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    documents?: DocumentListRelationFilter
+    invitedDocs?: DocumentListRelationFilter
+    approvedDocs?: DocumentListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -4185,7 +4238,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -4201,7 +4253,6 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
-    role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -4217,8 +4268,8 @@ export namespace Prisma {
     status?: EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
     createdAt?: DateTimeFilter<"Document"> | Date | string
     updatedAt?: DateTimeFilter<"Document"> | Date | string
-    userId?: StringFilter<"Document"> | string
-    user?: XOR<UserRelationFilter, UserWhereInput>
+    invitedUsers?: UserListRelationFilter
+    approvedUsers?: UserListRelationFilter
     blockchainLogs?: BlockchainLogListRelationFilter
   }
 
@@ -4230,8 +4281,8 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
-    user?: UserOrderByWithRelationInput
+    invitedUsers?: UserOrderByRelationAggregateInput
+    approvedUsers?: UserOrderByRelationAggregateInput
     blockchainLogs?: BlockchainLogOrderByRelationAggregateInput
   }
 
@@ -4246,8 +4297,8 @@ export namespace Prisma {
     status?: EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
     createdAt?: DateTimeFilter<"Document"> | Date | string
     updatedAt?: DateTimeFilter<"Document"> | Date | string
-    userId?: StringFilter<"Document"> | string
-    user?: XOR<UserRelationFilter, UserWhereInput>
+    invitedUsers?: UserListRelationFilter
+    approvedUsers?: UserListRelationFilter
     blockchainLogs?: BlockchainLogListRelationFilter
   }, "id">
 
@@ -4259,7 +4310,6 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
     _count?: DocumentCountOrderByAggregateInput
     _max?: DocumentMaxOrderByAggregateInput
     _min?: DocumentMinOrderByAggregateInput
@@ -4276,7 +4326,6 @@ export namespace Prisma {
     status?: EnumDocumentStatusWithAggregatesFilter<"Document"> | $Enums.DocumentStatus
     createdAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
-    userId?: StringWithAggregatesFilter<"Document"> | string
   }
 
   export type BlockchainLogWhereInput = {
@@ -4339,10 +4388,10 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role?: $Enums.UserRole
     createdAt?: Date | string
     updatedAt?: Date | string
-    documents?: DocumentCreateNestedManyWithoutUserInput
+    invitedDocs?: DocumentCreateNestedManyWithoutInvitedUsersInput
+    approvedDocs?: DocumentCreateNestedManyWithoutApprovedUsersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -4350,10 +4399,10 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role?: $Enums.UserRole
     createdAt?: Date | string
     updatedAt?: Date | string
-    documents?: DocumentUncheckedCreateNestedManyWithoutUserInput
+    invitedDocs?: DocumentUncheckedCreateNestedManyWithoutInvitedUsersInput
+    approvedDocs?: DocumentUncheckedCreateNestedManyWithoutApprovedUsersInput
   }
 
   export type UserUpdateInput = {
@@ -4361,10 +4410,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    documents?: DocumentUpdateManyWithoutUserNestedInput
+    invitedDocs?: DocumentUpdateManyWithoutInvitedUsersNestedInput
+    approvedDocs?: DocumentUpdateManyWithoutApprovedUsersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -4372,10 +4421,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    documents?: DocumentUncheckedUpdateManyWithoutUserNestedInput
+    invitedDocs?: DocumentUncheckedUpdateManyWithoutInvitedUsersNestedInput
+    approvedDocs?: DocumentUncheckedUpdateManyWithoutApprovedUsersNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -4383,7 +4432,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    role?: $Enums.UserRole
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4393,7 +4441,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4403,7 +4450,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4416,7 +4462,8 @@ export namespace Prisma {
     status?: $Enums.DocumentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutDocumentsInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedDocsInput
+    approvedUsers?: UserCreateNestedManyWithoutApprovedDocsInput
     blockchainLogs?: BlockchainLogCreateNestedManyWithoutDocumentInput
   }
 
@@ -4428,7 +4475,8 @@ export namespace Prisma {
     status?: $Enums.DocumentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedDocsInput
+    approvedUsers?: UserUncheckedCreateNestedManyWithoutApprovedDocsInput
     blockchainLogs?: BlockchainLogUncheckedCreateNestedManyWithoutDocumentInput
   }
 
@@ -4440,7 +4488,8 @@ export namespace Prisma {
     status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutDocumentsNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedDocsNestedInput
+    approvedUsers?: UserUpdateManyWithoutApprovedDocsNestedInput
     blockchainLogs?: BlockchainLogUpdateManyWithoutDocumentNestedInput
   }
 
@@ -4452,7 +4501,8 @@ export namespace Prisma {
     status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedDocsNestedInput
+    approvedUsers?: UserUncheckedUpdateManyWithoutApprovedDocsNestedInput
     blockchainLogs?: BlockchainLogUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
@@ -4464,7 +4514,6 @@ export namespace Prisma {
     status?: $Enums.DocumentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
   }
 
   export type DocumentUpdateManyMutationInput = {
@@ -4485,7 +4534,6 @@ export namespace Prisma {
     status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type BlockchainLogCreateInput = {
@@ -4558,13 +4606,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type EnumUserRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
-  }
-
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -4591,7 +4632,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -4601,7 +4641,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -4611,7 +4650,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -4632,16 +4670,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserRoleFilter<$PrismaModel>
-    _max?: NestedEnumUserRoleFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -4680,9 +4708,10 @@ export namespace Prisma {
     not?: NestedEnumDocumentStatusFilter<$PrismaModel> | $Enums.DocumentStatus
   }
 
-  export type UserRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
   }
 
   export type BlockchainLogListRelationFilter = {
@@ -4694,6 +4723,10 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type BlockchainLogOrderByRelationAggregateInput = {
@@ -4708,7 +4741,6 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
   }
 
   export type DocumentMaxOrderByAggregateInput = {
@@ -4719,7 +4751,6 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
   }
 
   export type DocumentMinOrderByAggregateInput = {
@@ -4730,7 +4761,6 @@ export namespace Prisma {
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -4790,17 +4820,27 @@ export namespace Prisma {
     documentId?: SortOrder
   }
 
-  export type DocumentCreateNestedManyWithoutUserInput = {
-    create?: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput> | DocumentCreateWithoutUserInput[] | DocumentUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
-    createMany?: DocumentCreateManyUserInputEnvelope
+  export type DocumentCreateNestedManyWithoutInvitedUsersInput = {
+    create?: XOR<DocumentCreateWithoutInvitedUsersInput, DocumentUncheckedCreateWithoutInvitedUsersInput> | DocumentCreateWithoutInvitedUsersInput[] | DocumentUncheckedCreateWithoutInvitedUsersInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutInvitedUsersInput | DocumentCreateOrConnectWithoutInvitedUsersInput[]
     connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
   }
 
-  export type DocumentUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput> | DocumentCreateWithoutUserInput[] | DocumentUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
-    createMany?: DocumentCreateManyUserInputEnvelope
+  export type DocumentCreateNestedManyWithoutApprovedUsersInput = {
+    create?: XOR<DocumentCreateWithoutApprovedUsersInput, DocumentUncheckedCreateWithoutApprovedUsersInput> | DocumentCreateWithoutApprovedUsersInput[] | DocumentUncheckedCreateWithoutApprovedUsersInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutApprovedUsersInput | DocumentCreateOrConnectWithoutApprovedUsersInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type DocumentUncheckedCreateNestedManyWithoutInvitedUsersInput = {
+    create?: XOR<DocumentCreateWithoutInvitedUsersInput, DocumentUncheckedCreateWithoutInvitedUsersInput> | DocumentCreateWithoutInvitedUsersInput[] | DocumentUncheckedCreateWithoutInvitedUsersInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutInvitedUsersInput | DocumentCreateOrConnectWithoutInvitedUsersInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type DocumentUncheckedCreateNestedManyWithoutApprovedUsersInput = {
+    create?: XOR<DocumentCreateWithoutApprovedUsersInput, DocumentUncheckedCreateWithoutApprovedUsersInput> | DocumentCreateWithoutApprovedUsersInput[] | DocumentUncheckedCreateWithoutApprovedUsersInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutApprovedUsersInput | DocumentCreateOrConnectWithoutApprovedUsersInput[]
     connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
   }
 
@@ -4808,46 +4848,72 @@ export namespace Prisma {
     set?: string
   }
 
-  export type EnumUserRoleFieldUpdateOperationsInput = {
-    set?: $Enums.UserRole
-  }
-
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
 
-  export type DocumentUpdateManyWithoutUserNestedInput = {
-    create?: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput> | DocumentCreateWithoutUserInput[] | DocumentUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
-    upsert?: DocumentUpsertWithWhereUniqueWithoutUserInput | DocumentUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: DocumentCreateManyUserInputEnvelope
+  export type DocumentUpdateManyWithoutInvitedUsersNestedInput = {
+    create?: XOR<DocumentCreateWithoutInvitedUsersInput, DocumentUncheckedCreateWithoutInvitedUsersInput> | DocumentCreateWithoutInvitedUsersInput[] | DocumentUncheckedCreateWithoutInvitedUsersInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutInvitedUsersInput | DocumentCreateOrConnectWithoutInvitedUsersInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutInvitedUsersInput | DocumentUpsertWithWhereUniqueWithoutInvitedUsersInput[]
     set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
     disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
     delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
     connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    update?: DocumentUpdateWithWhereUniqueWithoutUserInput | DocumentUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: DocumentUpdateManyWithWhereWithoutUserInput | DocumentUpdateManyWithWhereWithoutUserInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutInvitedUsersInput | DocumentUpdateWithWhereUniqueWithoutInvitedUsersInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutInvitedUsersInput | DocumentUpdateManyWithWhereWithoutInvitedUsersInput[]
     deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
   }
 
-  export type DocumentUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput> | DocumentCreateWithoutUserInput[] | DocumentUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: DocumentCreateOrConnectWithoutUserInput | DocumentCreateOrConnectWithoutUserInput[]
-    upsert?: DocumentUpsertWithWhereUniqueWithoutUserInput | DocumentUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: DocumentCreateManyUserInputEnvelope
+  export type DocumentUpdateManyWithoutApprovedUsersNestedInput = {
+    create?: XOR<DocumentCreateWithoutApprovedUsersInput, DocumentUncheckedCreateWithoutApprovedUsersInput> | DocumentCreateWithoutApprovedUsersInput[] | DocumentUncheckedCreateWithoutApprovedUsersInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutApprovedUsersInput | DocumentCreateOrConnectWithoutApprovedUsersInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutApprovedUsersInput | DocumentUpsertWithWhereUniqueWithoutApprovedUsersInput[]
     set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
     disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
     delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
     connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
-    update?: DocumentUpdateWithWhereUniqueWithoutUserInput | DocumentUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: DocumentUpdateManyWithWhereWithoutUserInput | DocumentUpdateManyWithWhereWithoutUserInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutApprovedUsersInput | DocumentUpdateWithWhereUniqueWithoutApprovedUsersInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutApprovedUsersInput | DocumentUpdateManyWithWhereWithoutApprovedUsersInput[]
     deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutDocumentsInput = {
-    create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
-    connect?: UserWhereUniqueInput
+  export type DocumentUncheckedUpdateManyWithoutInvitedUsersNestedInput = {
+    create?: XOR<DocumentCreateWithoutInvitedUsersInput, DocumentUncheckedCreateWithoutInvitedUsersInput> | DocumentCreateWithoutInvitedUsersInput[] | DocumentUncheckedCreateWithoutInvitedUsersInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutInvitedUsersInput | DocumentCreateOrConnectWithoutInvitedUsersInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutInvitedUsersInput | DocumentUpsertWithWhereUniqueWithoutInvitedUsersInput[]
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutInvitedUsersInput | DocumentUpdateWithWhereUniqueWithoutInvitedUsersInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutInvitedUsersInput | DocumentUpdateManyWithWhereWithoutInvitedUsersInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutApprovedUsersNestedInput = {
+    create?: XOR<DocumentCreateWithoutApprovedUsersInput, DocumentUncheckedCreateWithoutApprovedUsersInput> | DocumentCreateWithoutApprovedUsersInput[] | DocumentUncheckedCreateWithoutApprovedUsersInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutApprovedUsersInput | DocumentCreateOrConnectWithoutApprovedUsersInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutApprovedUsersInput | DocumentUpsertWithWhereUniqueWithoutApprovedUsersInput[]
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutApprovedUsersInput | DocumentUpdateWithWhereUniqueWithoutApprovedUsersInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutApprovedUsersInput | DocumentUpdateManyWithWhereWithoutApprovedUsersInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type UserCreateNestedManyWithoutInvitedDocsInput = {
+    create?: XOR<UserCreateWithoutInvitedDocsInput, UserUncheckedCreateWithoutInvitedDocsInput> | UserCreateWithoutInvitedDocsInput[] | UserUncheckedCreateWithoutInvitedDocsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutInvitedDocsInput | UserCreateOrConnectWithoutInvitedDocsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserCreateNestedManyWithoutApprovedDocsInput = {
+    create?: XOR<UserCreateWithoutApprovedDocsInput, UserUncheckedCreateWithoutApprovedDocsInput> | UserCreateWithoutApprovedDocsInput[] | UserUncheckedCreateWithoutApprovedDocsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedDocsInput | UserCreateOrConnectWithoutApprovedDocsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type BlockchainLogCreateNestedManyWithoutDocumentInput = {
@@ -4855,6 +4921,18 @@ export namespace Prisma {
     connectOrCreate?: BlockchainLogCreateOrConnectWithoutDocumentInput | BlockchainLogCreateOrConnectWithoutDocumentInput[]
     createMany?: BlockchainLogCreateManyDocumentInputEnvelope
     connect?: BlockchainLogWhereUniqueInput | BlockchainLogWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutInvitedDocsInput = {
+    create?: XOR<UserCreateWithoutInvitedDocsInput, UserUncheckedCreateWithoutInvitedDocsInput> | UserCreateWithoutInvitedDocsInput[] | UserUncheckedCreateWithoutInvitedDocsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutInvitedDocsInput | UserCreateOrConnectWithoutInvitedDocsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutApprovedDocsInput = {
+    create?: XOR<UserCreateWithoutApprovedDocsInput, UserUncheckedCreateWithoutApprovedDocsInput> | UserCreateWithoutApprovedDocsInput[] | UserUncheckedCreateWithoutApprovedDocsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedDocsInput | UserCreateOrConnectWithoutApprovedDocsInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type BlockchainLogUncheckedCreateNestedManyWithoutDocumentInput = {
@@ -4872,12 +4950,30 @@ export namespace Prisma {
     set?: $Enums.DocumentStatus
   }
 
-  export type UserUpdateOneRequiredWithoutDocumentsNestedInput = {
-    create?: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutDocumentsInput
-    upsert?: UserUpsertWithoutDocumentsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDocumentsInput, UserUpdateWithoutDocumentsInput>, UserUncheckedUpdateWithoutDocumentsInput>
+  export type UserUpdateManyWithoutInvitedDocsNestedInput = {
+    create?: XOR<UserCreateWithoutInvitedDocsInput, UserUncheckedCreateWithoutInvitedDocsInput> | UserCreateWithoutInvitedDocsInput[] | UserUncheckedCreateWithoutInvitedDocsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutInvitedDocsInput | UserCreateOrConnectWithoutInvitedDocsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutInvitedDocsInput | UserUpsertWithWhereUniqueWithoutInvitedDocsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutInvitedDocsInput | UserUpdateWithWhereUniqueWithoutInvitedDocsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutInvitedDocsInput | UserUpdateManyWithWhereWithoutInvitedDocsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type UserUpdateManyWithoutApprovedDocsNestedInput = {
+    create?: XOR<UserCreateWithoutApprovedDocsInput, UserUncheckedCreateWithoutApprovedDocsInput> | UserCreateWithoutApprovedDocsInput[] | UserUncheckedCreateWithoutApprovedDocsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedDocsInput | UserCreateOrConnectWithoutApprovedDocsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutApprovedDocsInput | UserUpsertWithWhereUniqueWithoutApprovedDocsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutApprovedDocsInput | UserUpdateWithWhereUniqueWithoutApprovedDocsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutApprovedDocsInput | UserUpdateManyWithWhereWithoutApprovedDocsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type BlockchainLogUpdateManyWithoutDocumentNestedInput = {
@@ -4892,6 +4988,32 @@ export namespace Prisma {
     update?: BlockchainLogUpdateWithWhereUniqueWithoutDocumentInput | BlockchainLogUpdateWithWhereUniqueWithoutDocumentInput[]
     updateMany?: BlockchainLogUpdateManyWithWhereWithoutDocumentInput | BlockchainLogUpdateManyWithWhereWithoutDocumentInput[]
     deleteMany?: BlockchainLogScalarWhereInput | BlockchainLogScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutInvitedDocsNestedInput = {
+    create?: XOR<UserCreateWithoutInvitedDocsInput, UserUncheckedCreateWithoutInvitedDocsInput> | UserCreateWithoutInvitedDocsInput[] | UserUncheckedCreateWithoutInvitedDocsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutInvitedDocsInput | UserCreateOrConnectWithoutInvitedDocsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutInvitedDocsInput | UserUpsertWithWhereUniqueWithoutInvitedDocsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutInvitedDocsInput | UserUpdateWithWhereUniqueWithoutInvitedDocsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutInvitedDocsInput | UserUpdateManyWithWhereWithoutInvitedDocsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutApprovedDocsNestedInput = {
+    create?: XOR<UserCreateWithoutApprovedDocsInput, UserUncheckedCreateWithoutApprovedDocsInput> | UserCreateWithoutApprovedDocsInput[] | UserUncheckedCreateWithoutApprovedDocsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedDocsInput | UserCreateOrConnectWithoutApprovedDocsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutApprovedDocsInput | UserUpsertWithWhereUniqueWithoutApprovedDocsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutApprovedDocsInput | UserUpdateWithWhereUniqueWithoutApprovedDocsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutApprovedDocsInput | UserUpdateManyWithWhereWithoutApprovedDocsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type BlockchainLogUncheckedUpdateManyWithoutDocumentNestedInput = {
@@ -4936,13 +5058,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
-  }
-
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -4980,16 +5095,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserRoleFilter<$PrismaModel>
-    _max?: NestedEnumUserRoleFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -5065,7 +5170,7 @@ export namespace Prisma {
     _max?: NestedEnumDocumentStatusFilter<$PrismaModel>
   }
 
-  export type DocumentCreateWithoutUserInput = {
+  export type DocumentCreateWithoutInvitedUsersInput = {
     id?: string
     title: string
     description?: string | null
@@ -5073,10 +5178,11 @@ export namespace Prisma {
     status?: $Enums.DocumentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
+    approvedUsers?: UserCreateNestedManyWithoutApprovedDocsInput
     blockchainLogs?: BlockchainLogCreateNestedManyWithoutDocumentInput
   }
 
-  export type DocumentUncheckedCreateWithoutUserInput = {
+  export type DocumentUncheckedCreateWithoutInvitedUsersInput = {
     id?: string
     title: string
     description?: string | null
@@ -5084,33 +5190,58 @@ export namespace Prisma {
     status?: $Enums.DocumentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
+    approvedUsers?: UserUncheckedCreateNestedManyWithoutApprovedDocsInput
     blockchainLogs?: BlockchainLogUncheckedCreateNestedManyWithoutDocumentInput
   }
 
-  export type DocumentCreateOrConnectWithoutUserInput = {
+  export type DocumentCreateOrConnectWithoutInvitedUsersInput = {
     where: DocumentWhereUniqueInput
-    create: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput>
+    create: XOR<DocumentCreateWithoutInvitedUsersInput, DocumentUncheckedCreateWithoutInvitedUsersInput>
   }
 
-  export type DocumentCreateManyUserInputEnvelope = {
-    data: DocumentCreateManyUserInput | DocumentCreateManyUserInput[]
-    skipDuplicates?: boolean
+  export type DocumentCreateWithoutApprovedUsersInput = {
+    id?: string
+    title: string
+    description?: string | null
+    ipfsHash: string
+    status?: $Enums.DocumentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invitedUsers?: UserCreateNestedManyWithoutInvitedDocsInput
+    blockchainLogs?: BlockchainLogCreateNestedManyWithoutDocumentInput
   }
 
-  export type DocumentUpsertWithWhereUniqueWithoutUserInput = {
+  export type DocumentUncheckedCreateWithoutApprovedUsersInput = {
+    id?: string
+    title: string
+    description?: string | null
+    ipfsHash: string
+    status?: $Enums.DocumentStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedDocsInput
+    blockchainLogs?: BlockchainLogUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutApprovedUsersInput = {
     where: DocumentWhereUniqueInput
-    update: XOR<DocumentUpdateWithoutUserInput, DocumentUncheckedUpdateWithoutUserInput>
-    create: XOR<DocumentCreateWithoutUserInput, DocumentUncheckedCreateWithoutUserInput>
+    create: XOR<DocumentCreateWithoutApprovedUsersInput, DocumentUncheckedCreateWithoutApprovedUsersInput>
   }
 
-  export type DocumentUpdateWithWhereUniqueWithoutUserInput = {
+  export type DocumentUpsertWithWhereUniqueWithoutInvitedUsersInput = {
     where: DocumentWhereUniqueInput
-    data: XOR<DocumentUpdateWithoutUserInput, DocumentUncheckedUpdateWithoutUserInput>
+    update: XOR<DocumentUpdateWithoutInvitedUsersInput, DocumentUncheckedUpdateWithoutInvitedUsersInput>
+    create: XOR<DocumentCreateWithoutInvitedUsersInput, DocumentUncheckedCreateWithoutInvitedUsersInput>
   }
 
-  export type DocumentUpdateManyWithWhereWithoutUserInput = {
+  export type DocumentUpdateWithWhereUniqueWithoutInvitedUsersInput = {
+    where: DocumentWhereUniqueInput
+    data: XOR<DocumentUpdateWithoutInvitedUsersInput, DocumentUncheckedUpdateWithoutInvitedUsersInput>
+  }
+
+  export type DocumentUpdateManyWithWhereWithoutInvitedUsersInput = {
     where: DocumentScalarWhereInput
-    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutUserInput>
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutInvitedUsersInput>
   }
 
   export type DocumentScalarWhereInput = {
@@ -5124,32 +5255,72 @@ export namespace Prisma {
     status?: EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
     createdAt?: DateTimeFilter<"Document"> | Date | string
     updatedAt?: DateTimeFilter<"Document"> | Date | string
-    userId?: StringFilter<"Document"> | string
   }
 
-  export type UserCreateWithoutDocumentsInput = {
+  export type DocumentUpsertWithWhereUniqueWithoutApprovedUsersInput = {
+    where: DocumentWhereUniqueInput
+    update: XOR<DocumentUpdateWithoutApprovedUsersInput, DocumentUncheckedUpdateWithoutApprovedUsersInput>
+    create: XOR<DocumentCreateWithoutApprovedUsersInput, DocumentUncheckedCreateWithoutApprovedUsersInput>
+  }
+
+  export type DocumentUpdateWithWhereUniqueWithoutApprovedUsersInput = {
+    where: DocumentWhereUniqueInput
+    data: XOR<DocumentUpdateWithoutApprovedUsersInput, DocumentUncheckedUpdateWithoutApprovedUsersInput>
+  }
+
+  export type DocumentUpdateManyWithWhereWithoutApprovedUsersInput = {
+    where: DocumentScalarWhereInput
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutApprovedUsersInput>
+  }
+
+  export type UserCreateWithoutInvitedDocsInput = {
     id?: string
     name: string
     email: string
     password: string
-    role?: $Enums.UserRole
     createdAt?: Date | string
     updatedAt?: Date | string
+    approvedDocs?: DocumentCreateNestedManyWithoutApprovedUsersInput
   }
 
-  export type UserUncheckedCreateWithoutDocumentsInput = {
+  export type UserUncheckedCreateWithoutInvitedDocsInput = {
     id?: string
     name: string
     email: string
     password: string
-    role?: $Enums.UserRole
     createdAt?: Date | string
     updatedAt?: Date | string
+    approvedDocs?: DocumentUncheckedCreateNestedManyWithoutApprovedUsersInput
   }
 
-  export type UserCreateOrConnectWithoutDocumentsInput = {
+  export type UserCreateOrConnectWithoutInvitedDocsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
+    create: XOR<UserCreateWithoutInvitedDocsInput, UserUncheckedCreateWithoutInvitedDocsInput>
+  }
+
+  export type UserCreateWithoutApprovedDocsInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invitedDocs?: DocumentCreateNestedManyWithoutInvitedUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovedDocsInput = {
+    id?: string
+    name: string
+    email: string
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invitedDocs?: DocumentUncheckedCreateNestedManyWithoutInvitedUsersInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovedDocsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovedDocsInput, UserUncheckedCreateWithoutApprovedDocsInput>
   }
 
   export type BlockchainLogCreateWithoutDocumentInput = {
@@ -5176,35 +5347,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserUpsertWithoutDocumentsInput = {
-    update: XOR<UserUpdateWithoutDocumentsInput, UserUncheckedUpdateWithoutDocumentsInput>
-    create: XOR<UserCreateWithoutDocumentsInput, UserUncheckedCreateWithoutDocumentsInput>
-    where?: UserWhereInput
+  export type UserUpsertWithWhereUniqueWithoutInvitedDocsInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutInvitedDocsInput, UserUncheckedUpdateWithoutInvitedDocsInput>
+    create: XOR<UserCreateWithoutInvitedDocsInput, UserUncheckedCreateWithoutInvitedDocsInput>
   }
 
-  export type UserUpdateToOneWithWhereWithoutDocumentsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutDocumentsInput, UserUncheckedUpdateWithoutDocumentsInput>
+  export type UserUpdateWithWhereUniqueWithoutInvitedDocsInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutInvitedDocsInput, UserUncheckedUpdateWithoutInvitedDocsInput>
   }
 
-  export type UserUpdateWithoutDocumentsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type UserUpdateManyWithWhereWithoutInvitedDocsInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutInvitedDocsInput>
   }
 
-  export type UserUncheckedUpdateWithoutDocumentsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: StringFilter<"User"> | string
+    name?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    password?: StringFilter<"User"> | string
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutApprovedDocsInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutApprovedDocsInput, UserUncheckedUpdateWithoutApprovedDocsInput>
+    create: XOR<UserCreateWithoutApprovedDocsInput, UserUncheckedCreateWithoutApprovedDocsInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutApprovedDocsInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutApprovedDocsInput, UserUncheckedUpdateWithoutApprovedDocsInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutApprovedDocsInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutApprovedDocsInput>
   }
 
   export type BlockchainLogUpsertWithWhereUniqueWithoutDocumentInput = {
@@ -5242,7 +5426,8 @@ export namespace Prisma {
     status?: $Enums.DocumentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutDocumentsInput
+    invitedUsers?: UserCreateNestedManyWithoutInvitedDocsInput
+    approvedUsers?: UserCreateNestedManyWithoutApprovedDocsInput
   }
 
   export type DocumentUncheckedCreateWithoutBlockchainLogsInput = {
@@ -5253,7 +5438,8 @@ export namespace Prisma {
     status?: $Enums.DocumentStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
+    invitedUsers?: UserUncheckedCreateNestedManyWithoutInvitedDocsInput
+    approvedUsers?: UserUncheckedCreateNestedManyWithoutApprovedDocsInput
   }
 
   export type DocumentCreateOrConnectWithoutBlockchainLogsInput = {
@@ -5280,7 +5466,8 @@ export namespace Prisma {
     status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutDocumentsNestedInput
+    invitedUsers?: UserUpdateManyWithoutInvitedDocsNestedInput
+    approvedUsers?: UserUpdateManyWithoutApprovedDocsNestedInput
   }
 
   export type DocumentUncheckedUpdateWithoutBlockchainLogsInput = {
@@ -5291,20 +5478,11 @@ export namespace Prisma {
     status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedDocsNestedInput
+    approvedUsers?: UserUncheckedUpdateManyWithoutApprovedDocsNestedInput
   }
 
-  export type DocumentCreateManyUserInput = {
-    id?: string
-    title: string
-    description?: string | null
-    ipfsHash: string
-    status?: $Enums.DocumentStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type DocumentUpdateWithoutUserInput = {
+  export type DocumentUpdateWithoutInvitedUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5312,10 +5490,11 @@ export namespace Prisma {
     status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedUsers?: UserUpdateManyWithoutApprovedDocsNestedInput
     blockchainLogs?: BlockchainLogUpdateManyWithoutDocumentNestedInput
   }
 
-  export type DocumentUncheckedUpdateWithoutUserInput = {
+  export type DocumentUncheckedUpdateWithoutInvitedUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5323,10 +5502,45 @@ export namespace Prisma {
     status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedUsers?: UserUncheckedUpdateManyWithoutApprovedDocsNestedInput
     blockchainLogs?: BlockchainLogUncheckedUpdateManyWithoutDocumentNestedInput
   }
 
-  export type DocumentUncheckedUpdateManyWithoutUserInput = {
+  export type DocumentUncheckedUpdateManyWithoutInvitedUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    ipfsHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentUpdateWithoutApprovedUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    ipfsHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invitedUsers?: UserUpdateManyWithoutInvitedDocsNestedInput
+    blockchainLogs?: BlockchainLogUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutApprovedUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    ipfsHash?: StringFieldUpdateOperationsInput | string
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invitedUsers?: UserUncheckedUpdateManyWithoutInvitedDocsNestedInput
+    blockchainLogs?: BlockchainLogUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutApprovedUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5341,6 +5555,64 @@ export namespace Prisma {
     txHash: string
     network: string
     createdAt?: Date | string
+  }
+
+  export type UserUpdateWithoutInvitedDocsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedDocs?: DocumentUpdateManyWithoutApprovedUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutInvitedDocsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedDocs?: DocumentUncheckedUpdateManyWithoutApprovedUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutInvitedDocsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpdateWithoutApprovedDocsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invitedDocs?: DocumentUpdateManyWithoutInvitedUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovedDocsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invitedDocs?: DocumentUncheckedUpdateManyWithoutInvitedUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutApprovedDocsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BlockchainLogUpdateWithoutDocumentInput = {

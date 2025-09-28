@@ -56,7 +56,6 @@ Request body:
   "email": "newuser@example.com",
   "name": "John Doe",
   "password": "password123",
-  "role": "USER" // or "ADMIN"
 }
 ```
 
@@ -67,7 +66,6 @@ Response:
   "id": "uuid",
   "email": "newuser@example.com",
   "name": "John Doe",
-  "role": "USER",
   "createdAt": "2024-04-23T10:00:00Z",
   "updatedAt": "2024-04-23T10:00:00Z"
 }
@@ -87,7 +85,6 @@ Response:
     "id": "uuid",
     "email": "user@example.com",
     "name": "John Doe",
-    "role": "USER",
     "documents": [
       {
         "id": "uuid",
@@ -112,7 +109,6 @@ Response:
   "id": "uuid",
   "email": "user@example.com",
   "name": "John Doe",
-  "role": "USER",
   "documents": [
     {
       "id": "uuid",

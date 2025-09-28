@@ -16,19 +16,19 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { JwtAuthGuard } from '../../global/guards/jwt-auth.guard';
+import { Public } from 'src/global/decorators/public.decorator';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('users')
 @Controller('users')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @Roles('ADMIN')
+  @Public()
   @ApiOperation({ summary: 'Create new user' })
   @ApiResponse({ status: 201, description: 'User created successfully' })
   create(@Body() createUserDto: CreateUserDto) {
@@ -36,7 +36,6 @@ export class UsersController {
   }
 
   @Get()
-  @Roles('ADMIN')
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Return all users' })
   findAll() {
@@ -51,15 +50,13 @@ export class UsersController {
   }
 
   @Put(':id')
-  @Roles('ADMIN')
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
-  async update(@Param('id') id: string, @Body() updateUserDto: any) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  @Roles('ADMIN')
   @ApiOperation({ summary: 'Delete user' })
   @ApiResponse({ status: 200, description: 'User deleted successfully' })
   async remove(@Param('id') id: string) {

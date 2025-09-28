@@ -112,7 +112,6 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
-  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -124,8 +123,7 @@ exports.Prisma.DocumentScalarFieldEnum = {
   ipfsHash: 'ipfsHash',
   status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  userId: 'userId'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.BlockchainLogScalarFieldEnum = {
@@ -150,11 +148,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.UserRole = exports.$Enums.UserRole = {
-  ADMIN: 'ADMIN',
-  USER: 'USER'
-};
-
 exports.DocumentStatus = exports.$Enums.DocumentStatus = {
   DRAFT: 'DRAFT',
   APPROVED: 'APPROVED',

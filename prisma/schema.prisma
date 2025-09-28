@@ -14,11 +14,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
 enum DocumentStatus {
   DRAFT
   APPROVED
@@ -26,14 +21,15 @@ enum DocumentStatus {
 }
 
 model User {
-  id        String     @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
-  email     String     @unique
+  email     String   @unique
   password  String
-  role      UserRole   @default(USER)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  documents Document[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invitedDocs  Document[] @relation("InvitedUsers")
+  approvedDocs Document[] @relation("ApprovedUsers")
 }
 
 model Document {
@@ -44,8 +40,8 @@ model Document {
   status         DocumentStatus  @default(DRAFT)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  userId         String
-  user           User            @relation(fields: [userId], references: [id])
+  invitedUsers   User[]          @relation("InvitedUsers")
+  approvedUsers  User[]          @relation("ApprovedUsers")
   blockchainLogs BlockchainLog[]
 }
 
