@@ -47,7 +47,7 @@ export class DocumentsService {
 
     // Prepare user connections - only invited users initially
     const invitedUsers = createDocumentDto.invitedUserIds?.length 
-      ? { connect: createDocumentDto.invitedUserIds.map(id => ({ id })) }
+      ? { connect: [...createDocumentDto.invitedUserIds, userId].map(id => ({ id })) }
       : undefined;
 
     // Create document in database
